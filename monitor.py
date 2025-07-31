@@ -1,7 +1,8 @@
+import os
 import subprocess
+import time
 
 def get_cpu_usage():
-    """Fetches current CPU usage."""
     try:
         # Using mpstat for a more precise CPU idle percentage
         # Requires sysstat package (e.g., sudo apt-get install sysstat)
@@ -20,7 +21,6 @@ def get_cpu_usage():
             return "N/A"
 
 def get_memory_usage():
-    """Fetches current memory usage."""
     try:
         cmd = "free -h | grep 'Mem:'"
         output = subprocess.check_output(cmd, shell=True, text=True)
@@ -33,7 +33,6 @@ def get_memory_usage():
         return "N/A"
 
 def get_processes():
-    """Fetches a list of active processes."""
     try:
         # Get PID, User, %CPU, %MEM, Command
         cmd = "ps aux --sort=-%cpu,-%mem" # Sort by CPU then Memory
@@ -42,7 +41,7 @@ def get_processes():
         processes = []
         # Parse header
         header = lines[0].split()
-        # Find index for relevant columns
+
         try:
             pid_idx = header.index('PID')
             user_idx = header.index('USER')
@@ -70,23 +69,29 @@ def get_processes():
     except Exception:
         return []
 
-def main():
-     # --- CPU Section ---
-    print("CPU Usage: ", get_cpu_usage())
+# pass qtd: 0 to show all
+def update(qtd = 0):
 
-    # --- Memory Section ---
-    print("Mem Usage: ", get_memory_usage())
-
-    # Montar a arvore de processos
-    print ("\nProcessos")
+    cpu_usage = get_cpu_usage()
+    memory_usage = get_memory_usage()
     processes = get_processes()
-    i = 0
+
+    os.system('clear')
+    print("CPU Usage: ", cpu_usage)
+    print("Mem Usage: ", memory_usage)
+
+    print ("\nProcessos")
+    
     for pid, user, cpu, mem, command in processes:
         print("pid: ", pid, "| user: ", user, "| cpu: ", cpu, "| mem: ", mem, "\n")
-        i += 1
-        if i == 5 : 
-            print("...")
+        qtd -= 1
+        if (qtd == 0):
             return
+
+def main():
+    while True:
+        update(5)
+        #time.sleep(.1)
         
 
 if __name__ == "__main__":
