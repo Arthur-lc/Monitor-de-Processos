@@ -7,32 +7,19 @@ from textual.containers import Horizontal, Container
 
 
 def get_cpu_usage():
-    try:
-        cmd = "mpstat 1 1 | grep 'Average' | awk '{print 100 - $NF}'"
-        output = subprocess.check_output(cmd, shell=True, text=True)
-        cpu_percent = float(output.strip())
-        return f"{cpu_percent:.2f}%"
-    except (subprocess.CalledProcessError, ValueError):
-        # Fallback to top if mpstat is not available or fails
-        try:
-            cmd = "top -bn1 | grep 'Cpu(s)' | sed 's/.*, *\\([0-9.]*\\)%*id.*/\\1/' | awk '{print 100 - $1}'"
-            output = subprocess.check_output(cmd, shell=True, text=True)
-            cpu_percent = float(output.strip())
-            return f"{cpu_percent:.2f}%"
-        except Exception:
-            return "N/A"
+    cmd = "mpstat 1 1 | grep 'Average' | awk '{print 100 - $NF}'"
+    output = subprocess.check_output(cmd, shell=True, text=True)
+    cpu_percent = float(output.strip())
+    return f"{cpu_percent:.2f}%"
 
 def get_memory_usage():
-    try:
-        cmd = "free -h | grep 'Mem:'"
-        output = subprocess.check_output(cmd, shell=True, text=True)
-        parts = output.split()
-        total_mem = parts[1]
-        used_mem = parts[2]
-        free_mem = parts[3]
-        return f"Total: {total_mem}, Used: {used_mem}, Free: {free_mem}"
-    except Exception:
-        return "N/A"
+    cmd = "free -h | grep 'Mem:'"
+    output = subprocess.check_output(cmd, shell=True, text=True)
+    parts = output.split()
+    total_mem = parts[1]
+    used_mem = parts[2]
+    free_mem = parts[3]
+    return (total_mem, used_mem, free_mem)
 
 def get_processes(sort_by):
     if sort_by == 'c':
@@ -99,6 +86,7 @@ class ProcessMonitorApp(App):
             with Container(id="summary-container"):
                 yield Static("CPU Usage:  ...", id="cpu-summary")
                 yield Static("Mem Usage:  ...", id="mem-summary")
+                yield Static("Processes:  ...", id="processes-sumary")
 
             with RadioSet(id="sort-select"):
                 yield RadioButton("Sort by CPU", id="c", value=True)
@@ -117,15 +105,17 @@ class ProcessMonitorApp(App):
         
         cpu_widget = self.query_one("#cpu-summary", Static)
         mem_widget = self.query_one("#mem-summary", Static)
+        processes_widget = self.query_one("#processes-sumary", Static)
 
         cpu_widget.update(f"CPU Usage:  {cpu_usage}")
-        mem_widget.update(f"Mem Usage:  {mem_usage}")
+        mem_widget.update(f"Mem Usage:  Total: {mem_usage[0]}, Used: {mem_usage[1]}, Free: {mem_usage[2]}")
         
         if not table.columns:
             table.cursor_type = "none"
             table.add_columns("PID", "User", "Name", "%CPU", "%MEM")
 
         processes = get_processes(self.sort_key)
+        processes_widget.update(f"Processes:  {len(processes)}")
         
         table.clear() 
         for proc in processes:
