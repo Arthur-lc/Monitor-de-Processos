@@ -95,7 +95,7 @@ class ProcessMonitorApp(App):
         yield Footer()
 
     def on_mount(self) -> None:
-        self.set_interval(.5, self.update_table)
+        self.set_interval(1, self.update_table)
 
     async def update_table(self) -> None:
         table = self.query_one(DataTable)
@@ -111,15 +111,20 @@ class ProcessMonitorApp(App):
         mem_widget.update(f"Mem Usage:  Total: {mem_usage[0]}, Used: {mem_usage[1]}, Free: {mem_usage[2]}")
         
         if not table.columns:
-            table.cursor_type = "none"
+            table.cursor_type = "row"
             table.add_columns("PID", "User", "Name", "%CPU", "%MEM")
 
         processes = get_processes(self.sort_key)
         processes_widget.update(f"Processes:  {len(processes)}")
         
+        cursor_row = table.cursor_row
+
         table.clear() 
         for proc in processes:
             table.add_row(*proc, key=proc[0])
+        
+        if cursor_row < table.row_count:
+            table.move_cursor(row=cursor_row)
 
     def on_radio_set_changed(self, event: RadioSet.Changed) -> None:
         if event.pressed.id:
