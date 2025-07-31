@@ -42,19 +42,12 @@ def get_processes():
         # Parse header
         header = lines[0].split()
 
-        try:
-            pid_idx = header.index('PID')
-            user_idx = header.index('USER')
-            cpu_idx = header.index('%CPU')
-            mem_idx = header.index('%MEM')
-            cmd_start_idx = header.index('COMMAND') # Command can have spaces
-        except ValueError:
-            # Fallback for systems with slightly different ps output headers
-            pid_idx = 1
-            user_idx = 0
-            cpu_idx = 2
-            mem_idx = 3
-            cmd_start_idx = 10 # Common index for COMMAND
+        
+        pid_idx = header.index('PID')
+        user_idx = header.index('USER')
+        cpu_idx = header.index('%CPU')
+        mem_idx = header.index('%MEM')
+        cmd_start_idx = header.index('COMMAND') # Command can have spaces
 
         for line in lines[1:]: # Skip header
             parts = line.split(None, cmd_start_idx - 1) # Split up to command
@@ -63,8 +56,13 @@ def get_processes():
                 user = parts[user_idx]
                 cpu = parts[cpu_idx]
                 mem = parts[mem_idx]
-                command = ' '.join(line.split()[cmd_start_idx:]) # Rejoin the command part
-                processes.append((pid, user, cpu, mem, command))
+                command = ' '.join(line.split()[cmd_start_idx:])
+
+                if command.startswith('[') and command.endswith(']'):
+                    name = command
+                else:
+                    name = command.split(" ")[0].split('/')[-1]
+                processes.append((pid, user, cpu, mem, command, name))
         return processes
     except Exception:
         return []
@@ -82,15 +80,15 @@ def update(qtd = 0):
 
     print ("\nProcessos")
     
-    for pid, user, cpu, mem, command in processes:
-        print("pid: ", pid, "| user: ", user, "| cpu: ", cpu, "| mem: ", mem, "\n")
+    for pid, user, cpu, mem, command, name in processes:
+        print("name: ", name, "| pid: ", pid, "| user: ", user, "| cpu: ", cpu, "| mem: ", mem, "\n")
         qtd -= 1
         if (qtd == 0):
             return
 
 def main():
     while True:
-        update(5)
+        update()
         #time.sleep(.1)
         
 
