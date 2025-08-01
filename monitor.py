@@ -94,7 +94,7 @@ class ProcessMonitorApp(App):
         yield Footer()
 
     def on_mount(self) -> None:
-        self.set_interval(1, self.update_table)
+        self.set_interval(.1, self.update_table)
 
     async def update_table(self) -> None:
         table = self.query_one(DataTable)
