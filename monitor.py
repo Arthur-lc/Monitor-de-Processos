@@ -1,4 +1,3 @@
-import os
 import subprocess
 from textual.app import App, ComposeResult
 from textual.widgets import DataTable, Header, Footer
@@ -41,8 +40,8 @@ def get_processes(sort_by):
     mem_idx = header.index('%MEM')
     cmd_start_idx = header.index('COMMAND')
 
-    for line in lines[1:]: # Skip header
-        parts = line.split(None, cmd_start_idx - 1) # Split up to command
+    for line in lines[1:]:
+        parts = line.split(None, cmd_start_idx - 1)
         if len(parts) >= cmd_start_idx:
             pid = parts[pid_idx]
             user = parts[user_idx]
@@ -129,9 +128,6 @@ class ProcessMonitorApp(App):
     def on_radio_set_changed(self, event: RadioSet.Changed) -> None:
         if event.pressed.id:
             self.sort_key = event.pressed.id
-
-    async def watch_sort_key(self, old_key: str, new_key: str) -> None:
-        await self.update_table()
 
 
 if __name__ == "__main__":
