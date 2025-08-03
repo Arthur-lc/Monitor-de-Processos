@@ -50,10 +50,13 @@ def get_processes(sort_by):
             command = ' '.join(line.split()[cmd_start_idx:])
 
             if command.startswith('[') and command.endswith(']'):
-                name = command
+                name = f"\\[{command[1:-1]}]"
             else:
                 name = command.split(" ")[0].split('/')[-1]
-            processes.append((pid, user, name, cpu, mem))
+            
+            print(name)
+            if (name != "ps"):
+                processes.append((pid, user, name, cpu, mem))
     return processes
 
 
@@ -133,3 +136,6 @@ class ProcessMonitorApp(App):
 if __name__ == "__main__":
     app = ProcessMonitorApp()
     app.run()
+
+""" if __name__ == "__main__":
+    get_processes('c') """
