@@ -54,7 +54,6 @@ def get_processes(sort_by):
             else:
                 name = command.split(" ")[0].split('/')[-1]
             
-            print(name)
             if (name != "ps"):
                 processes.append((pid, user, name, cpu, mem))
     return processes

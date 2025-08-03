@@ -11,7 +11,6 @@ Este é um monitor de processos e uso de recursos do desenvolvido para **Linux**
 - Lista de **processos em execução** com PID, Usuário, Nome, %CPU e %MEM.
 - **Ordenação** da lista de processos por consumo de **CPU** ou **Memória**.
 - Atualização automática das informações.
-- Interface de usuário.
 
 ## Implementação
 
@@ -28,10 +27,6 @@ O monitor foi construído em **Python** e utiliza as seguintes bibliotecas:
 
 - **Python 3**
 - **Sistema Operacional baseado em Linux** (o script utiliza comandos como `mpstat`, `free` e `ps` que são padrão em distribuições Linux).
-- **Biblioteca Textual**:
-  ```bash
-  pip install textual
-  ```
 - O comando `mpstat` pode não vir instalado por padrão em algumas distribuições. Para instalá-lo em sistemas baseados em Debian/Ubuntu, use:
   ```bash
   sudo apt-get install sysstat
