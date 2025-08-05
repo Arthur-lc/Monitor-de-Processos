@@ -10,6 +10,7 @@ Desenvolvido para a disciplina de sistemas operacionais pelo grupo 13:
 
 <br/>
 
+![Video](https://youtu.be/Q0RxZcqteqU)
 ![image](image.png)
 
 ## Funcionalidades
