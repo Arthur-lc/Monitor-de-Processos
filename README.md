@@ -1,6 +1,14 @@
 # Monitor de Processos em Terminal
 
-Este é um monitor de processos e uso de recursos do desenvolvido para **Linux**. Ele exibe o uso de CPU, memória e uma lista de processos que pode ser ordenada em tempo real.
+Este é um monitor de processos e uso de recursos do desenvolvido para **Linux**. Ele exibe o uso de CPU, memória e uma lista de processos que pode ser ordenada em tempo real.  
+
+Desenvolvido para a disciplina de sistemas operacionais pelo grupo 13:
+- Arthur Costa
+- Brendo Almeida
+- Enzo Silva
+- Pablo Pinheiro Castro
+
+<br/>
 
 ![image](image.png)
 
@@ -47,7 +55,7 @@ O monitor foi construído em **Python** e utiliza as seguintes bibliotecas:
     pip install textual
     ```
 
-4.  **Execute o monitor:**
+4.  **Execute:**
     ```bash
     python monitor.py
     ```
